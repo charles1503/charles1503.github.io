@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>MaxWell与Canal | Charles's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">MaxWell与Canal</h1><a id="logo" href="/.">Charles's Blog</a><p class="description">任何事都没有表面看起来那么简单。</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">MaxWell与Canal</h1><div class="post-meta">Mar 12, 2019<span> | </span><span class="category"><a href="/categories/大数据/">大数据</a><a href="/categories/大数据/中间件/">中间件</a></span></div><a class="disqus-comment-count" href="/2019/03/12/MaxWell与Canal/#vcomment"><span class="valine-comment-count" data-xid="/2019/03/12/MaxWell与Canal/"></span><span> 条评论</span></a><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#工具对比"><span class="toc-number">1.</span> <span class="toc-text">工具对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Canal"><span class="toc-number">2.</span> <span class="toc-text">Canal</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#背景"><span class="toc-number">2.0.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#原理"><span class="toc-number">2.0.2.</span> <span class="toc-text">原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高可用"><span class="toc-number">2.1.</span> <span class="toc-text">高可用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#部署"><span class="toc-number">2.2.</span> <span class="toc-text">部署</span></a></li></ol></div></div><div class="post-content"><h2 id="工具对比"><a href="#工具对比" class="headerlink" title="工具对比"></a>工具对比</h2><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Canal</th>
+<th>Maxwell</th>
+<th>mysql_streamer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实现语言</td>
+<td>Java</td>
+<td>Java</td>
+<td>Python</td>
+</tr>
+<tr>
+<td>社区活跃度</td>
+<td>活跃</td>
+<td>活跃</td>
+<td>不活跃</td>
+</tr>
+<tr>
+<td>高可用</td>
+<td>支持</td>
+<td>定制</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>数据落地</td>
+<td>定制</td>
+<td>落地到kafka</td>
+<td>落地到kafka</td>
+</tr>
+<tr>
+<td>分区</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>bootstrap</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>数据格式</td>
+<td>格式自由</td>
+<td>固定JSON</td>
+<td>固定JSON</td>
+</tr>
+<tr>
+<td>文档</td>
+<td>较详细</td>
+<td>较详细</td>
+<td>略粗</td>
+</tr>
+<tr>
+<td>随机读</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Canal"><a href="#Canal" class="headerlink" title="Canal"></a><a href="https://github.com/alibaba/canal" target="_blank" rel="noopener">Canal</a></h2><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>早期，阿里巴巴B2B公司因为存在杭州和美国双机房部署，存在跨机房同步的业务需求。不过早期的数据库同步业务，主要是基于trigger的方式获取增量变更，不过从2010年开始，阿里系公司开始逐步的尝试基于数据库的日志解析，获取增量变更进行同步，由此衍生出了增量订阅&amp;消费的业务，从此开启了一段新纪元。</p>
+<p>ps. 目前内部版本已经支持mysql和oracle部分版本的日志解析，当前的canal开源版本支持5.7及以下的版本(阿里内部mysql 5.7.13, 5.6.10, mysql 5.5.18和5.1.40/48)</p>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p><img src="https://gitee.com/charles1503/blog-images/raw/master/canal/theory.png" alt="avatar"></p>
+<ul>
+<li>canal模拟mysql slave的交互协议，伪装自己为mysql slave，向mysql master发送dump协议</li>
+<li>mysql master收到dump请求，开始推送(slave拉取，不是master主动push给slaves)binary log给slave(也就是canal)</li>
+<li>canal解析binary log对象(原始为byte流)<h3 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h3></li>
+<li>基于zookeeper,使用其watcher和EPHEMERAL节点(和session生命周期绑定)特性实现 </li>
+<li>canal的ha分为两部分，canal server和canal client分别有对应的ha实现<ol>
+<li>canal server: 为了减少对mysql dump的请求，不同server上的instance(不同server上的相同instance)要求同一时间只能有一个处于running，其他的处于standby状态(standby是instance的状态)。</li>
+<li>canal client: 为了保证有序性，一份instance同一时间只能由一个canal client进行get/ack/rollback操作，否则客户端接收无法保证有序。<br><img src="https://gitee.com/charles1503/blog-images/raw/master/canal/HA.png" alt="avatar"></li>
+</ol>
+</li>
+<li>大致步骤<ol>
+<li>canal server要启动某个canal instance时都先向zookeeper_进行一次尝试启动判断_(实现：创建EPHEMERAL节点，谁创建成功就允许谁启动)</li>
+<li>创建zookeeper节点成功后，对应的canal server就启动对应的canal instance，没有创建成功的canal instance就会处于standby状态。</li>
+<li>一旦zookeeper发现canal server A创建的instance节点消失后，立即通知其他的canal server再次进行步骤1的操作，重新选出一个canal server启动instance。</li>
+<li>canal client每次进行connect时，会首先向zookeeper询问当前是谁启动了canal instance，然后和其建立链接，一旦链接不可用，会重新尝试connect。<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3></li>
+</ol>
+</li>
+<li><p>MySQL开启binlog,修改配置后重启MySQL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">log-bin=mysql-bin #添加这一行就ok</span><br><span class="line">binlog-format=ROW #选择row模式</span><br><span class="line">server_id=1 #配置mysql replaction需要定义，不能和canal的slaveId重复</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Canal配置</p>
+</li>
+</ul>
+</div><div class="tags"><a href="/tags/Java/">Java</a><a href="/tags/MySQL/">MySQL</a><a href="/tags/Kafka/">Kafka</a></div><div class="post-nav"><a class="next" href="/2019/01/12/OpenResty之共享内存/">OpenResty ngx.shared.DICT</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'P3HSH58by4CLzdd1RAww5y5y-gzGzoHsz',
+  appKey:'wAzBXy1KkhP1p1HnQb6OS86v',
+  placeholder:'评论下?',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://charles1503.gitee.io"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/DevOps/">DevOps</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/banner/">banner</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/中间件/">中间件</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/">微服务</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/Lua/" style="font-size: 15px;">Lua</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Kafka/" style="font-size: 15px;">Kafka</a> <a href="/tags/找乐子/" style="font-size: 15px;">找乐子</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/03/12/MaxWell与Canal/">MaxWell与Canal</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/12/OpenResty之共享内存/">OpenResty ngx.shared.DICT</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/12/Consul And Consul Template/">Consul And Consul Template</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/index/">键盘Banner</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://gitee.com/charles1503" title="码云" target="_blank">码云</a><ul></ul><a href="https://github.com/charles1503" title="GitHub" target="_blank">GitHub</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Charles's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
